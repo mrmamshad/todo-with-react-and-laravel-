@@ -1,6 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
-import Fab from "@mui/material/Fab";
+import ToggleColorMode from "./project/ToggleColorMode";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
 import Todoitems from "./project/Todoitems";
@@ -9,8 +9,11 @@ export default function Dashboard({ auth }) {
     const [notes, setNotes] = useState([]);
     const [counter, setCounter] = useState(5);
     const [text, setText] = useState("");
-    const [bool, setBool] = useState(false);
+    const [bgColor, setBgColor] = useState("bg-white");
 
+    const handleModeChange = (mode) => {
+        setBgColor(mode === "dark" ? "bg-gray-800" : "bg-white");
+    };
     useEffect(() => {
         fetch("notes.json")
             .then((res) => res.json())
@@ -44,11 +47,23 @@ export default function Dashboard({ auth }) {
         >
             <Head title="Tado-App" />
 
-            <div className="py-8 w-3/5">
+            <div className={`py-8 w-3/5 `}>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-3xl">
-                        <div className="p-6 text-gray-900 dark:text-gray-100 flex flex-col items-center">
-                            <h1 className="font-bold w-3/3 mb-4">Todo-App</h1>
+                        <div
+                            className={`p-6 text-gray-900 ${bgColor} dark:text-gray-100 flex flex-col items-center`}
+                        >
+                            <div className="w-full flex justify-between items-center mb-4">
+                                <h1 className="font-bold font-roboto text-3xl gradient-text text-center">
+                                    Todo-App
+                                </h1>
+                                <section className="flex justify-end  pr-4">
+                                    <ToggleColorMode
+                                        onModeChange={handleModeChange}
+                                    />
+                                </section>
+                            </div>
+
                             <form
                                 className="flex gap-4"
                                 onSubmit={(e) => {
@@ -58,15 +73,15 @@ export default function Dashboard({ auth }) {
                                 }}
                             >
                                 <input
-                                    className="rounded-lg px-4 bg-gray-700 py-2 h-9 border-0 border-gray-500 outline-none duration-200"
+                                    className="rounded-lg px-4 text-gray-400  bg-gray-700 py-2 h-9 border-0 outline-none duration-300"
                                     type="text"
                                     value={text}
                                     placeholder="Write your next task"
                                     onChange={(e) => setText(e.target.value)}
                                 />
-                                <button className="">
+
+                                <button className=" rounded-2xl  border-gray-700 bg-gray-800  shadow-md ">
                                     <AddIcon />
-                                    Add
                                 </button>
                             </form>
 
@@ -75,7 +90,7 @@ export default function Dashboard({ auth }) {
                                     key={note.id}
                                     note={note}
                                     deleteNote={deleteNote}
-                                    allnotes = {setNotes}
+                                    allnotes={setNotes}
                                 />
                             ))}
                         </div>
